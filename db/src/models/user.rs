@@ -49,7 +49,7 @@ impl User {
 }
 
 #[derive(Debug, Clone, Insertable)]
-#[table_name = "users"]
+#[diesel(table_name = users)]
 pub struct NewUser {
     pub username: String,
     pub display_name: Option<String>,

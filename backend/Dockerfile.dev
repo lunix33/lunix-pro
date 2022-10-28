@@ -1,0 +1,8 @@
+FROM rust:1.64.0-slim-bullseye
+WORKDIR /opt/backend
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y pkg-config make libssl-dev libsqlite3-dev
+RUN cargo install cargo-watch
+
+CMD [ "make", "dev" ]

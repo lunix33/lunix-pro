@@ -22,7 +22,7 @@ async fn main() -> std::io::Result<()> {
 
     let db_connection = connect_db();
     let graphql_schema = schema::create_schema(db_connection.clone());
-    let listen = std::env::var("PUBLIC_URL").unwrap_or(String::from("localhost:8080"));
+    let listen = std::env::var("LP_API_URL").unwrap_or(String::from("localhost:8081"));
 
     let server = HttpServer::new(move || {
         App::new()
@@ -69,7 +69,7 @@ fn setup_ssl_builder() -> SslAcceptorBuilder {
 }
 
 fn connect_db() -> DbPool {
-    let database_url = std::env::var("DATABASE_URL").unwrap_or(String::from("./db.sqlite3"));
+    let database_url = db::env_url();
     info!("Using database `{}`.", &database_url);
     connect_pool(&database_url)
 }

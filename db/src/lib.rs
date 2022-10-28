@@ -36,6 +36,10 @@ pub fn connect_pool(database_url: &str) -> DbPool {
     pool
 }
 
+pub fn env_url() -> String {
+    std::env::var("LP_DATABASE_URL").unwrap_or(String::from("./db.sqlite3"))
+}
+
 fn run_migrations(
     connection: &mut impl MigrationHarness<DbBackend>,
 ) -> diesel::migration::Result<()> {
