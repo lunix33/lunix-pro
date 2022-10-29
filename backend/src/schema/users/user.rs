@@ -1,8 +1,12 @@
-use async_graphql::{ComplexObject, Context, Error, Result, SimpleObject};
-use chrono::NaiveDateTime;
-use log::error;
+use std::sync::Arc;
 
-use crate::schema::{get_db_connection, users::user_token::UserToken, Authorization};
+use async_graphql::{ComplexObject, Context, SimpleObject};
+use chrono::NaiveDateTime;
+
+use crate::{
+    result::{ApplicationError, ApplicationResult},
+    schema::{field_name, get_db_connection, users::user_token::UserToken, Authorization},
+};
 
 /// Representation of a single user.
 #[derive(SimpleObject)]
@@ -26,17 +30,14 @@ pub struct User {
 impl User {
     /// List of unexpired token of the user.
     #[graphql(guard = "Authorization(&[])")]
-    async fn tokens<'a>(&self, ctx: &'a Context<'_>) -> Result<Vec<UserToken>> {
+    async fn tokens<'a>(&self, ctx: &'a Context<'_>) -> ApplicationResult<Vec<UserToken>> {
         let mut conn = get_db_connection(ctx)?;
         let tokens = self.db_object.tokens(&mut conn).map_err(|err| {
-            error!(
-                "Failed to fetch list of user token for {}: {:#?}",
-                self.username, err
-            );
-            Error::new(format!(
-                "Unable to get the list of user token for {}.",
-                self.username
-            ))
+            ApplicationError::Fetch(
+                field_name(ctx),
+                Some(self.username.clone()),
+                Some(Arc::new(err)),
+            )
         })?;
         Ok(tokens.into_iter().map(UserToken::from).collect())
     }
