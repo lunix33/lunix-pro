@@ -19,12 +19,17 @@ impl FromRequest for UserExtractor {
     fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
         let req = req.clone();
         Box::pin(async move {
-            match req.headers().get("Bearer") {
+            match req.headers().get("Authorization") {
                 None => return Ok(Self { user: None }),
                 Some(encoded_token) => {
                     let encoded_token = encoded_token
                         .to_str()
-                        .map_err(|e| ApplicationError::TokenDecode(Box::new(e)))?;
+                        .map_err(|e| ApplicationError::TokenDecode(Box::new(e)))?
+                        .split(" ")
+                        .collect::<Vec<&str>>()
+                        .get(1)
+                        .unwrap_or(&"")
+                        .to_string();
                     let decoded_token = base64::decode(encoded_token)
                         .map_err(|e| ApplicationError::TokenDecode(Box::new(e)))?;
                     let composed_token = String::from_utf8_lossy(&decoded_token);

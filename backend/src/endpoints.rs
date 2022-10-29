@@ -31,12 +31,12 @@ async fn graphiql_route() -> impl Responder {
 
 // Handles requests to GET;POST /api/
 async fn graphql_route(
-    data: GraphQLRequest,
+    req: GraphQLRequest,
     schema: Data<GraphQlSchema>,
     token_user: UserExtractor,
 ) -> GraphQLResponse {
     schema
-        .execute(data.into_inner().data(token_user))
+        .execute(req.into_inner().data(token_user))
         .await
         .into()
 }

@@ -2,7 +2,7 @@
 extern crate diesel;
 
 use diesel::{
-    r2d2::{ConnectionManager, Pool},
+    r2d2::{ConnectionManager, Pool, PooledConnection},
     sqlite::Sqlite,
     SqliteConnection,
 };
@@ -21,8 +21,10 @@ pub use result::*;
 const MIGRATION: EmbeddedMigrations = embed_migrations!("./migrations/db");
 
 pub type DbConnection = SqliteConnection;
+pub type DbConnectionManader = ConnectionManager<DbConnection>;
+pub type DbPooledConnection = PooledConnection<DbConnectionManader>;
+pub type DbPool = Pool<DbConnectionManader>;
 pub type DbBackend = Sqlite;
-pub type DbPool = Pool<ConnectionManager<DbConnection>>;
 
 pub fn connect_pool(database_url: &str) -> DbPool {
     let manager = ConnectionManager::<DbConnection>::new(database_url);

@@ -383,6 +383,8 @@ dependencies = [
  "async-trait",
  "base64",
  "bytes",
+ "chrono",
+ "chrono-tz 0.6.3",
  "fast_chemail",
  "fnv",
  "futures-util",
@@ -518,9 +520,10 @@ dependencies = [
  "argon2",
  "async-graphql",
  "async-graphql-actix-web",
+ "async-trait",
  "base64",
  "chrono",
- "chrono-tz",
+ "chrono-tz 0.7.0",
  "db",
  "env_logger",
  "log",
@@ -659,13 +662,35 @@ dependencies = [
 
 [[package]]
 name = "chrono-tz"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29c39203181991a7dd4343b8005bd804e7a9a37afb8ac070e43771e8c820bbde"
+dependencies = [
+ "chrono",
+ "chrono-tz-build 0.0.3",
+ "phf",
+]
+
+[[package]]
+name = "chrono-tz"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbc529705a6e0028189c83f0a5dd9fb214105116f7e3c0eeab7ff0369766b0d1"
 dependencies = [
  "chrono",
- "chrono-tz-build",
+ "chrono-tz-build 0.1.0",
  "phf",
+]
+
+[[package]]
+name = "chrono-tz-build"
+version = "0.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6f509c3a87b33437b05e2458750a0700e5bdd6956176773e6c7d6dd15a283a0c"
+dependencies = [
+ "parse-zoneinfo",
+ "phf",
+ "phf_codegen",
 ]
 
 [[package]]
@@ -889,7 +914,7 @@ name = "db"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "chrono-tz",
+ "chrono-tz 0.7.0",
  "diesel",
  "diesel_migrations",
  "rand",
@@ -1693,6 +1718,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e1fb5f6f826b772a8d4c0394209441e7d37cbbb967ae9c7e0e8134365c9ee676"
 dependencies = [
  "siphasher",
+ "uncased",
 ]
 
 [[package]]
@@ -2187,6 +2213,15 @@ name = "ucd-trie"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9e79c4d996edb816c91e4308506774452e55e95c3c9de07b6729e17e15a5ef81"
+
+[[package]]
+name = "uncased"
+version = "0.9.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "09b01702b0fd0b3fadcf98e098780badda8742d4f4a7676615cad90e8ac73622"
+dependencies = [
+ "version_check",
+]
 
 [[package]]
 name = "unicase"
