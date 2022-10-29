@@ -1,3 +1,5 @@
+import AdminHome from "@c/pages/admin/home";
+
 export default function AdminHomePage() {
-  return <div>Admin home</div>;
+  return <AdminHome />;
 }
