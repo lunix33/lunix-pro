@@ -1,7 +1,9 @@
 use chrono::prelude::*;
 use diesel::{insert_into, prelude::*};
 
-use crate::{schema::users, user_token::UserToken, DbConnection, DbError, DbResult, Hasher};
+use crate::{
+    schema::users, user_token::UserToken, DbConnection, DbError, DbResult, Hasher, PageOptions,
+};
 
 #[derive(Debug, Clone, Queryable)]
 pub struct User {
@@ -17,18 +19,29 @@ impl User {
     /// # Arguments
     /// * `conn`: The database connection.
     /// * `with_deleted`: True if the deleted users should be returnd.
+    /// * `page`: Optional pagination options for the query.
     ///
     /// # Returns
     /// The list of users.
-    pub fn get_users(conn: &mut DbConnection, with_deleted: bool) -> DbResult<Vec<User>> {
+    pub fn get_users(
+        conn: &mut DbConnection,
+        with_deleted: Option<bool>,
+        page: Option<PageOptions>,
+    ) -> DbResult<Vec<User>> {
         use self::users::dsl::*;
-        Ok(match with_deleted {
-            true => users.order_by(created_on).load::<Self>(conn)?,
-            false => users
-                .filter(deleted_on.is_null())
-                .order_by(created_on)
-                .load::<Self>(conn)?,
-        })
+
+        let with_deleted = with_deleted.unwrap_or(false);
+
+        let mut query = users.into_boxed().order_by(created_on);
+        if with_deleted == false {
+            query = query.filter(deleted_on.is_null())
+        }
+        if let Some(page_option) = page {
+            query = query.limit(page_option.limit);
+            query = query.offset(page_option.offset);
+        }
+
+        Ok(query.load::<Self>(conn)?)
     }
 
     /// Get a single user from the database.

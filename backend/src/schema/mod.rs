@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use async_graphql::{Context, EmptySubscription, Guard, Result, Schema};
+use async_graphql::{Context, EmptySubscription, Guard, InputObject, Result, Schema};
 use db::{group::Permissions, DbPool};
 
 use crate::{
@@ -37,6 +37,20 @@ impl<'a> Guard for Authorization<'a> {
             field_name(ctx),
         ))?;
         Ok(())
+    }
+}
+
+#[derive(InputObject)]
+pub struct PageOptions {
+    /// The number of item to skip before the first result.
+    offset: i64,
+    /// The number of item to be returned by the query.
+    limit: i64,
+}
+
+impl Into<db::PageOptions> for PageOptions {
+    fn into(self) -> db::PageOptions {
+        db::PageOptions::new(self.offset, self.limit)
     }
 }
 

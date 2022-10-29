@@ -26,6 +26,19 @@ pub type DbPooledConnection = PooledConnection<DbConnectionManader>;
 pub type DbPool = Pool<DbConnectionManader>;
 pub type DbBackend = Sqlite;
 
+pub struct PageOptions {
+    /// The number of item to skip before the first fetched item.
+    pub offset: i64,
+    /// The number of element to be returned by the query.
+    pub limit: i64,
+}
+
+impl PageOptions {
+    pub fn new(offset: i64, limit: i64) -> Self {
+        Self { offset, limit }
+    }
+}
+
 pub fn connect_pool(database_url: &str) -> DbPool {
     let manager = ConnectionManager::<DbConnection>::new(database_url);
     let pool = Pool::builder()
