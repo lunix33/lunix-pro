@@ -43,7 +43,7 @@ pub enum ApplicationError {
     /// * The ip address
     /// * The user
     /// * The field the user tried to access.
-    Forbidden(String, Option<db::user::User>, String),
+    Forbidden(String, Option<db::models::User>, String),
 }
 
 impl std::fmt::Display for ApplicationError {

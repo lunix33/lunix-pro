@@ -2,7 +2,7 @@ use std::{pin::Pin, sync::Arc};
 
 use actix_web::{dev::Payload, rt::task, web::Data, FromRequest, HttpRequest};
 use backend::Argon2Hasher;
-use db::{user::User, DbPool};
+use db::{models::User, DbPool};
 
 use crate::{ApplicationError, ApplicationResult};
 
@@ -62,7 +62,7 @@ impl FromRequest for UserExtractor {
                     let rst =
                         task::spawn_blocking(move || match User::get_user(&mut conn, &username) {
                             Ok(user) => {
-                                match user.verify_token(&token, &Argon2Hasher::default(), &mut conn)
+                                match user.verify_token(&mut conn, &token, &Argon2Hasher::default())
                                 {
                                     Ok(_) => Ok(Self {
                                         ip,

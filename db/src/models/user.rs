@@ -2,13 +2,16 @@ use chrono::prelude::*;
 use diesel::{insert_into, prelude::*};
 
 use crate::{
-    schema::users, user_token::UserToken, DbConnection, DbError, DbResult, Hasher, PageOptions,
+    models::{Group, UserToken},
+    schema::users,
+    DbConnection, DbError, DbResult, Hasher, PageOptions,
 };
 
 #[derive(Debug, Clone, Queryable)]
 pub struct User {
     pub username: String,
     pub display_name: Option<String>,
+    pub group_name: String,
     pub created_on: NaiveDateTime,
     pub deleted_on: Option<NaiveDateTime>,
 }
@@ -18,7 +21,7 @@ impl User {
     ///
     /// # Arguments
     /// * `conn`: The database connection.
-    /// * `with_deleted`: True if the deleted users should be returnd.
+    /// * `with_deleted`: True if the deleted users should be returned.
     /// * `page`: Optional pagination options for the query.
     ///
     /// # Returns
@@ -57,6 +60,14 @@ impl User {
         Ok(users.find(find_username).first::<User>(conn)?)
     }
 
+    /// Get the group of the user,
+    ///
+    /// # Arguments
+    /// * `conn`: The database connection.
+    pub fn group(&self, conn: &mut DbConnection) -> DbResult<Group> {
+        Group::get_group(conn, &self.group_name)
+    }
+
     /// List the user's tokens
     ///
     /// # Arguments
@@ -79,9 +90,9 @@ impl User {
     /// `Ok` if the token validates properly.
     pub fn verify_token(
         &self,
+        conn: &mut DbConnection,
         token: &str,
         hasher: &dyn Hasher<Error = DbError>,
-        conn: &mut DbConnection,
     ) -> DbResult<()> {
         for user_token in self.tokens(conn)? {
             if let Ok(_) = user_token.verify_token(token, hasher) {
@@ -102,8 +113,8 @@ impl User {
     /// The string token added.
     pub fn add_token(
         &self,
-        hasher: &dyn Hasher<Error = DbError>,
         conn: &mut DbConnection,
+        hasher: &dyn Hasher<Error = DbError>,
     ) -> DbResult<String> {
         let (user_token, str_token) = UserToken::new(&self.username, hasher)?;
         user_token.insert(conn)?;
@@ -117,11 +128,12 @@ impl User {
 pub struct NewUser {
     pub username: String,
     pub display_name: Option<String>,
+    pub group_name: String,
 }
 
 impl NewUser {
-    pub fn insert(&self, conn: &mut DbConnection) -> QueryResult<usize> {
+    pub fn insert(&self, conn: &mut DbConnection) -> DbResult<usize> {
         use self::users::dsl::*;
-        insert_into(users).values(self).execute(conn)
+        Ok(insert_into(users).values(self).execute(conn)?)
     }
 }

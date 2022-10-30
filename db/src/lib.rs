@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate diesel;
-
 use diesel::{
     r2d2::{ConnectionManager, Pool, PooledConnection},
     sqlite::Sqlite,
@@ -11,19 +8,18 @@ use diesel_migrations::{
 };
 
 mod hasher;
-mod models;
+pub mod models;
 mod result;
 mod schema;
 pub use hasher::*;
-pub use models::*;
 pub use result::*;
 
 const MIGRATION: EmbeddedMigrations = embed_migrations!("./migrations/db");
 
 pub type DbConnection = SqliteConnection;
-pub type DbConnectionManader = ConnectionManager<DbConnection>;
-pub type DbPooledConnection = PooledConnection<DbConnectionManader>;
-pub type DbPool = Pool<DbConnectionManader>;
+pub type DbConnectionManager = ConnectionManager<DbConnection>;
+pub type DbPooledConnection = PooledConnection<DbConnectionManager>;
+pub type DbPool = Pool<DbConnectionManager>;
 pub type DbBackend = Sqlite;
 
 pub struct PageOptions {

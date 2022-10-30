@@ -19,8 +19,8 @@ pub struct UserToken {
     pub expires_on: NaiveDateTime,
 }
 
-impl From<db::user_token::UserToken> for UserToken {
-    fn from(db_token: db::user_token::UserToken) -> Self {
+impl From<db::models::UserToken> for UserToken {
+    fn from(db_token: db::models::UserToken) -> Self {
         Self {
             // db_object: db_token.clone(),
             user_username: db_token.user_username,

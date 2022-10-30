@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use async_graphql::{Context, EmptySubscription, Guard, InputObject, Result, Schema};
-use db::{group::Permissions, DbPool};
+use db::DbPool;
 
 use crate::{
     result::{ApplicationError, ApplicationResult},
@@ -23,7 +23,7 @@ pub(crate) fn create_schema(conn: DbPool) -> GraphQlSchema {
     .finish()
 }
 
-struct Authorization<'a>(&'a [Permissions]);
+struct Authorization<'a>(&'a [&'a str]);
 
 #[async_trait::async_trait]
 impl<'a> Guard for Authorization<'a> {

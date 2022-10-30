@@ -2,13 +2,12 @@ use std::sync::Arc;
 
 use async_graphql::{Context, Object};
 
+use super::PageOptions;
 use crate::{
     result::{ApplicationError, ApplicationResult},
     schema::{field_name, get_db_connection, Authorization},
     user_extractor::UserExtractor,
 };
-
-use super::PageOptions;
 
 mod user;
 mod user_token;
@@ -27,7 +26,7 @@ impl UsersQuery {
         #[graphql(desc = "Optional pagination option")] page: Option<PageOptions>,
     ) -> ApplicationResult<Vec<user::User>> {
         let mut conn = get_db_connection(ctx)?;
-        let users = db::user::User::get_users(&mut conn, with_deleted, page.map(|o| o.into()))
+        let users = db::models::User::get_users(&mut conn, with_deleted, page.map(|o| o.into()))
             .map_err(|err| ApplicationError::Fetch(field_name(ctx), None, Some(Arc::new(err))))?;
         Ok(users.into_iter().map(user::User::from).collect())
     }

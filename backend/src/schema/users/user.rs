@@ -13,7 +13,7 @@ use crate::{
 #[graphql(complex)]
 pub struct User {
     #[graphql(skip)]
-    db_object: db::user::User,
+    db_object: db::models::User,
     /// The username of the user.
     pub username: String,
     /// The public display name of the user, if one is available.
@@ -43,8 +43,8 @@ impl User {
     }
 }
 
-impl From<db::user::User> for User {
-    fn from(db_user: db::user::User) -> Self {
+impl From<db::models::User> for User {
+    fn from(db_user: db::models::User) -> Self {
         Self {
             db_object: db_user.clone(),
             username: db_user.username,
