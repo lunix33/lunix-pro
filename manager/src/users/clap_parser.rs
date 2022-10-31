@@ -2,10 +2,21 @@ use clap::{Args, Subcommand};
 
 #[derive(Debug, Subcommand)]
 pub enum UserCommands {
-    #[command(about = "Create a new user.")]
+    #[command(about = "List the users (alias: `ls`)", alias = "ls")]
+    List(ListArgs),
+    #[command(about = "Create a new user. (alias: `mk`)", alias = "mk")]
     Create(NewUserArgs),
-    #[command(about = "Create a new token for a specified user.")]
+    #[command(
+        about = "Create a new token for a specified user. (alias: `mktok`)",
+        alias = "mktok"
+    )]
     CreateToken(NewTokenArgs),
+}
+
+#[derive(Debug, Args)]
+pub struct ListArgs {
+    #[arg(short, long, help = "Show the deleted users.")]
+    pub deleted: bool,
 }
 
 #[derive(Debug, Args)]
