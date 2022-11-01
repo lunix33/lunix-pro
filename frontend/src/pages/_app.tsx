@@ -1,5 +1,6 @@
 import NextApp, { AppInitialProps } from "next/app";
 import { ThemeProvider } from "@emotion/react";
+import { appWithTranslation } from "next-i18next";
 import { getCookie } from "cookies-next";
 import * as componentRoot from "@c";
 import GraphQlClientProvider from "@c/providers/gql";
@@ -11,7 +12,6 @@ import type { AppProps, AppContext } from "next/app";
 import type { Theme } from "@emotion/react";
 
 import "reset-css";
-import { appWithTranslation } from "next-i18next";
 
 interface CustomProps {
   theme: Theme;
