@@ -1,11 +1,11 @@
-import { useRouter } from "next/router";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import type {
+import {
   GetServerSidePropsContext,
   GetServerSidePropsResult,
   InferGetServerSidePropsType,
 } from "next";
-import type { ReactElement } from "react";
+import { useRouter } from "next/router";
+import { ReactElement } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 interface PageProps {}
 

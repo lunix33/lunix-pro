@@ -1,4 +1,4 @@
-import type { StyleObject } from "@c";
+import { StyleObject } from "@c";
 
 export const styles: StyleObject = {
   content: {

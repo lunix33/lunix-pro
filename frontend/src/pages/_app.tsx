@@ -1,15 +1,14 @@
-import NextApp, { AppInitialProps } from "next/app";
-import { ThemeProvider } from "@emotion/react";
+import NextApp, { AppInitialProps, AppProps, AppContext } from "next/app";
+import { ThemeProvider, Theme } from "@emotion/react";
 import { appWithTranslation } from "next-i18next";
 import { getCookie } from "cookies-next";
+
 import * as componentRoot from "@c";
 import GraphQlClientProvider from "@c/providers/gql";
 import Global from "@c/layouts/global";
 import Header from "@c/layouts/header";
 import Main from "@c/layouts/main";
 import Footer from "@c/layouts/footer";
-import type { AppProps, AppContext } from "next/app";
-import type { Theme } from "@emotion/react";
 
 import "reset-css";
 

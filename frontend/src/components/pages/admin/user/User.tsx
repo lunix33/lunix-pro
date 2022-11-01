@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import { ReactElement } from "react";
 
 export function User(): ReactElement {
   return <div>User page</div>;
