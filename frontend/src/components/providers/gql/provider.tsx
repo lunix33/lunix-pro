@@ -1,9 +1,11 @@
 import { ApolloProvider } from "@apollo/client";
-import { gqlClient } from "./client";
-import type { GraphQlClientProviderProps } from "./types";
+
+import { getWebClient } from "./client";
+
+import { GraphQlClientProviderProps } from "./types";
 
 export function GraphQlClientProvider(props: GraphQlClientProviderProps) {
   const { children } = props;
 
-  return <ApolloProvider client={gqlClient}>{children}</ApolloProvider>;
+  return <ApolloProvider client={getWebClient()}>{children}</ApolloProvider>;
 }

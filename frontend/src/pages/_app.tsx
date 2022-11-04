@@ -1,5 +1,5 @@
 import NextApp, { AppInitialProps, AppProps, AppContext } from "next/app";
-import { ThemeProvider, Theme } from "@emotion/react";
+import { ThemeProvider } from "@emotion/react";
 import { appWithTranslation } from "next-i18next";
 import { getCookie } from "cookies-next";
 
@@ -13,10 +13,12 @@ import Footer from "@c/layouts/footer";
 import "reset-css";
 
 interface CustomProps {
-  theme: Theme;
+  themeStr: string;
 }
 
-function App({ Component, pageProps, theme }: AppProps & CustomProps) {
+function App({ Component, pageProps, themeStr }: AppProps & CustomProps) {
+  const theme = (componentRoot as any)[themeStr];
+
   return (
     <GraphQlClientProvider>
       <ThemeProvider theme={theme}>
@@ -42,12 +44,12 @@ App.getInitialProps = async (
   const theme =
     typeof themeCookie === "string" &&
     componentRoot.validThemes.includes(themeCookie)
-      ? ((componentRoot as any)[themeCookie] as Theme)
-      : componentRoot.light;
+      ? themeCookie
+      : "light";
 
   return {
     ...(await NextApp.getInitialProps(ctx)),
-    theme,
+    themeStr: theme,
   };
 };
 
