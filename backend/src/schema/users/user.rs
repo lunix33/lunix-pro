@@ -31,15 +31,16 @@ impl User {
     /// List of unexpired token of the user.
     #[graphql(guard = "Authorization(&[])")]
     async fn tokens<'a>(&self, ctx: &'a Context<'_>) -> ApplicationResult<Vec<UserToken>> {
-        let mut conn = get_db_connection(ctx)?;
-        let tokens = self.db_object.tokens(&mut conn).map_err(|err| {
-            ApplicationError::Fetch(
-                field_name(ctx),
-                Some(self.username.clone()),
-                Some(Arc::new(err)),
-            )
-        })?;
-        Ok(tokens.into_iter().map(UserToken::from).collect())
+        get_db_connection(ctx, |mut conn| {
+            let tokens = self.db_object.tokens(&mut conn).map_err(|err| {
+                ApplicationError::Fetch(
+                    field_name(ctx),
+                    Some(self.username.clone()),
+                    Some(Arc::new(err)),
+                )
+            })?;
+            Ok(tokens.into_iter().map(UserToken::from).collect())
+        })
     }
 }
 

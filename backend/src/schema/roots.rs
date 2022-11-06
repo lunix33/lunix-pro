@@ -1,15 +1,19 @@
 use async_graphql::SimpleObject;
 
-use super::users::UsersQuery;
+use super::{groups::GroupQuery, users::UsersQuery};
 
 #[derive(SimpleObject)]
 pub struct QueryRoot {
     users: UsersQuery,
+    groups: GroupQuery,
 }
 
 impl Default for QueryRoot {
     fn default() -> Self {
-        Self { users: UsersQuery }
+        Self {
+            users: UsersQuery,
+            groups: GroupQuery,
+        }
     }
 }
 

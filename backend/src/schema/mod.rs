@@ -1,25 +1,27 @@
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
-use async_graphql::{Context, EmptySubscription, Guard, InputObject, Result, Schema};
-use db::DbPool;
+use async_graphql::{Context, EmptySubscription, Guard, Result, Schema};
+use db::{DbConnection, DbPooledConnection};
 
 use crate::{
     result::{ApplicationError, ApplicationResult},
     user_extractor::UserExtractor,
 };
 
+mod pagination;
 mod roots;
+
+mod groups;
 mod users;
 
 pub(crate) type GraphQlSchema = Schema<roots::QueryRoot, roots::MutationRoot, EmptySubscription>;
 
-pub(crate) fn create_schema(conn: DbPool) -> GraphQlSchema {
+pub(crate) fn create_schema() -> GraphQlSchema {
     Schema::build(
         roots::QueryRoot::default(),
         roots::MutationRoot::default(),
         EmptySubscription,
     )
-    .data(conn)
     .finish()
 }
 
@@ -40,27 +42,19 @@ impl<'a> Guard for Authorization<'a> {
     }
 }
 
-#[derive(InputObject)]
-pub struct PageOptions {
-    /// The number of item to skip before the first result.
-    offset: i64,
-    /// The number of item to be returned by the query.
-    limit: i64,
-}
-
-impl Into<db::PageOptions> for PageOptions {
-    fn into(self) -> db::PageOptions {
-        db::PageOptions::new(self.offset, self.limit)
-    }
-}
-
-fn get_db_connection<'a>(ctx: &'a Context<'_>) -> ApplicationResult<db::DbPooledConnection> {
-    match ctx.data::<DbPool>() {
-        Ok(ref pool) => match pool.get() {
-            Ok(conn) => Ok(conn),
-            Err(e) => Err(ApplicationError::Database(Arc::new(e))),
+fn get_db_connection<'a, T>(
+    ctx: &'a Context<'_>,
+    exec: impl FnOnce(&mut DbConnection) -> ApplicationResult<T>,
+) -> ApplicationResult<T> {
+    match ctx.data::<Arc<Mutex<DbPooledConnection>>>() {
+        Ok(mutex) => match mutex.lock() {
+            Ok(mut conn) => exec(&mut conn),
+            Err(e) => Err(ApplicationError::DatabaseConnectionLock(format!("{e:#?}"))),
         },
-        Err(e) => Err(ApplicationError::GqlContextData("DbPool".to_string(), e)),
+        Err(e) => Err(ApplicationError::GqlContextData(
+            "DbConnection".to_string(),
+            e,
+        )),
     }
 }
 

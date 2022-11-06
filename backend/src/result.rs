@@ -12,6 +12,11 @@ use log::{error, warn};
 
 #[derive(Debug, Clone)]
 pub enum ApplicationError {
+    /// Error returned when we fail to acquire a lock on the database connection.
+    ///
+    /// # Elements
+    /// * The reported lock error display.
+    DatabaseConnectionLock(String),
     /// Error returned when there's a database/connection pool issue.
     ///
     /// # Elements
@@ -50,12 +55,16 @@ impl std::fmt::Display for ApplicationError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use ApplicationError::*;
         match *self {
+            DatabaseConnectionLock(ref err) => {
+                error!("A database lock error occured: {err}");
+                write!(f, "internal_error")
+            }
             Database(ref err) => {
                 error!("A database error occured: {err:#?}");
                 write!(f, "internal_error")
             }
-            GqlContextData(ref element, _) => {
-                error!("Unable to retrive data '{element}' from the GraphQL context");
+            GqlContextData(ref element, ref err) => {
+                error!("Unable to retrive data '{element}' from the GraphQL context: {err:#?}");
                 write!(f, "request_error")
             }
             TokenValidation(ref ip, ref user, ref err) => {
@@ -96,6 +105,7 @@ impl std::error::Error for ApplicationError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         use ApplicationError::*;
         match *self {
+            DatabaseConnectionLock(_) => None,
             Database(ref err) => Some(err.as_ref()),
             GqlContextData(_, _) => None,
             TokenValidation(_, _, ref err) => Some(err.as_ref()),

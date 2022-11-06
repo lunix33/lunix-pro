@@ -2,15 +2,18 @@ use std::sync::Arc;
 
 use async_graphql::{Context, Object};
 
-use super::PageOptions;
 use crate::{
     result::{ApplicationError, ApplicationResult},
-    schema::{field_name, get_db_connection, Authorization},
+    schema::{
+        field_name, get_db_connection,
+        pagination::{PageOptions, PagedResult},
+        Authorization,
+    },
     user_extractor::UserExtractor,
 };
 
-mod user;
-mod user_token;
+pub mod user;
+pub mod user_token;
 
 pub struct UsersQuery;
 
@@ -24,11 +27,19 @@ impl UsersQuery {
         #[graphql(desc = "When true, the deleted users will also be part of the results.")]
         with_deleted: Option<bool>,
         #[graphql(desc = "Optional pagination option")] page: Option<PageOptions>,
-    ) -> ApplicationResult<Vec<user::User>> {
-        let mut conn = get_db_connection(ctx)?;
-        let users = db::models::User::get_users(&mut conn, with_deleted, page.map(|o| o.into()))
-            .map_err(|err| ApplicationError::Fetch(field_name(ctx), None, Some(Arc::new(err))))?;
-        Ok(users.into_iter().map(user::User::from).collect())
+    ) -> ApplicationResult<PagedResult<user::User>> {
+        get_db_connection(ctx, move |mut conn| {
+            let data = db::models::User::get_users(&mut conn, with_deleted, page.map(|o| o.into()))
+                .map_err(|err| ApplicationError::Fetch(field_name(ctx), None, Some(Arc::new(err))))?
+                .into_iter()
+                .map(user::User::from)
+                .collect();
+            let count = db::models::User::count(&mut conn).map_err(|err| {
+                ApplicationError::Fetch(field_name(ctx), None, Some(Arc::new(err)))
+            })?;
+
+            Ok(PagedResult { data, count })
+        })
     }
 
     /// Get the detail of the currently logged in user.

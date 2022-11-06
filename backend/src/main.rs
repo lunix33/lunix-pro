@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
     setup_logger();
 
     let db_connection = connect_db();
-    let graphql_schema = schema::create_schema(db_connection.clone());
+    let graphql_schema = schema::create_schema();
     let listen = std::env::var("LP_API_URL").unwrap_or(String::from("localhost:8081"));
 
     let server = HttpServer::new(move || {

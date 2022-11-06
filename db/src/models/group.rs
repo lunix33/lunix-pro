@@ -1,5 +1,5 @@
 use chrono::prelude::*;
-use diesel::prelude::*;
+use diesel::{dsl::count_star, prelude::*};
 
 use crate::{models::GroupPermission, schema::groups, DbConnection, DbResult, PageOptions};
 
@@ -11,6 +11,11 @@ pub struct Group {
 }
 
 impl Group {
+    pub fn count(conn: &mut DbConnection) -> DbResult<i64> {
+        use self::groups::dsl::*;
+        Ok(groups.select(count_star()).first(conn)?)
+    }
+
     /// Get a list of all groups
     ///
     /// # Arguments

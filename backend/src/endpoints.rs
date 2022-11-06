@@ -1,3 +1,5 @@
+use std::sync::{Arc, Mutex};
+
 use actix_web::{
     http::header::{ContentType, TryIntoHeaderValue},
     web::{self, Data, ServiceConfig},
@@ -5,8 +7,13 @@ use actix_web::{
 };
 use async_graphql::http::GraphiQLSource;
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
+use db::DbPool;
 
-use crate::{schema::GraphQlSchema, user_extractor::UserExtractor};
+use crate::{
+    result::{ApplicationError, ApplicationResult},
+    schema::GraphQlSchema,
+    user_extractor::UserExtractor,
+};
 
 pub(crate) fn configure_endpoints(config: &mut ServiceConfig) {
     let mut scope = web::scope("/api").service(
@@ -33,10 +40,18 @@ async fn graphiql_route() -> impl Responder {
 async fn graphql_route(
     gql_req: GraphQLRequest,
     schema: Data<GraphQlSchema>,
+    db_pool: Data<DbPool>,
     token_user: UserExtractor,
-) -> GraphQLResponse {
-    schema
-        .execute(gql_req.into_inner().data(token_user))
-        .await
-        .into()
+) -> ApplicationResult<GraphQLResponse> {
+    let conn = Arc::new(Mutex::new(
+        db_pool
+            .get()
+            .map_err(|err| ApplicationError::Database(Arc::new(err)))?,
+    ));
+
+    Ok(GraphQLResponse::from(
+        schema
+            .execute(gql_req.into_inner().data(token_user).data(conn))
+            .await,
+    ))
 }

@@ -1,5 +1,5 @@
 use chrono::prelude::*;
-use diesel::{insert_into, prelude::*};
+use diesel::{dsl::count_star, insert_into, prelude::*};
 
 use crate::{
     models::{Group, UserToken},
@@ -17,6 +17,11 @@ pub struct User {
 }
 
 impl User {
+    pub fn count(conn: &mut DbConnection) -> DbResult<i64> {
+        use self::users::dsl::*;
+        Ok(users.select(count_star()).first(conn)?)
+    }
+
     /// Get a list of all the users.
     ///
     /// # Arguments
