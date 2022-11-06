@@ -1,6 +1,6 @@
 import { ReactElement, isValidElement, ReactNode, useMemo } from "react";
 
-import { cellStyles } from "./style";
+import { cellStyles, mobileBreakpoint } from "./style";
 import { CellProps } from "./types";
 
 export function Cell<D>({
@@ -9,7 +9,14 @@ export function Cell<D>({
   empty = null,
 }: CellProps<D>): ReactElement {
   // const { transform } = header.props;
-  const { render, dataValue, fit = false } = header;
+  const {
+    render,
+    dataValue,
+    fit = false,
+    textAlign = "left",
+    mobileTextAlign = textAlign,
+    label,
+  } = header;
   const raw = dataValue != null ? data[dataValue] : undefined;
 
   const display = useMemo(() => {
@@ -19,7 +26,21 @@ export function Cell<D>({
   }, [render, data, raw]);
 
   return (
-    <td css={[cellStyles.td, fit && cellStyles.fit]}>
+    <td
+      data-label={header.label}
+      css={[
+        (theme) => ({
+          textAlign,
+          [theme.breakpoints.down(mobileBreakpoint)]: {
+            textAlign: mobileTextAlign,
+          },
+        }),
+        cellStyles.td,
+        fit && cellStyles.fit,
+        label == null && cellStyles.noLabel,
+        empty == null && display == null && cellStyles.hide,
+      ]}
+    >
       {display == null ? empty : display}
     </td>
   );

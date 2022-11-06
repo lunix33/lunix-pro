@@ -1,7 +1,7 @@
-import { StyleObject } from "@c";
+import { style } from "@t";
 
-export const styles: StyleObject = {
+export const styles = style({
   content: {
     border: "1px solid pink",
   },
-};
+});

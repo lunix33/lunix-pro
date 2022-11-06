@@ -14,33 +14,36 @@ export function Table<D>({
   columns = [],
   emptyCell,
   emptyTable,
+  className,
 }: TableProps<D>): ReactElement {
   return (
-    <table css={tableStyles.table}>
-      <>
-        <caption css={tableStyles.caption}>{caption}</caption>
-        <thead>
-          <tr css={tableStyles.thead}>
-            {columns.map((c, idx) => (
-              <Column key={idx} {...c} />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.length === 0 ? (
-            <EmptyTable span={columns.length}>{emptyTable}</EmptyTable>
-          ) : (
-            data.map((row, idx) => (
-              <TableRow
-                key={idx}
-                data={row}
-                emptyCell={emptyCell}
-                headers={columns}
-              />
-            ))
-          )}
-        </tbody>
-      </>
-    </table>
+    <div css={tableStyles.scroll}>
+      <table className={className} css={tableStyles.table}>
+        <>
+          <caption css={tableStyles.caption}>{caption}</caption>
+          <thead>
+            <tr css={tableStyles.thead}>
+              {columns.map((c, idx) => (
+                <Column key={idx} {...c} />
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.length === 0 ? (
+              <EmptyTable span={columns.length}>{emptyTable}</EmptyTable>
+            ) : (
+              data.map((row, idx) => (
+                <TableRow
+                  key={idx}
+                  data={row}
+                  emptyCell={emptyCell}
+                  headers={columns}
+                />
+              ))
+            )}
+          </tbody>
+        </>
+      </table>
+    </div>
   );
 }

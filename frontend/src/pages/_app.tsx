@@ -3,12 +3,12 @@ import { ThemeProvider } from "@emotion/react";
 import { appWithTranslation } from "next-i18next";
 import { getCookie } from "cookies-next";
 
-import * as componentRoot from "@c";
 import GraphQlClientProvider from "@c/providers/gql";
 import Global from "@c/layouts/global";
 import Header from "@c/layouts/header";
 import Main from "@c/layouts/main";
 import Footer from "@c/layouts/footer";
+import * as themeRoot from "@t";
 
 import "reset-css";
 
@@ -17,7 +17,7 @@ interface CustomProps {
 }
 
 function App({ Component, pageProps, themeStr }: AppProps & CustomProps) {
-  const theme = (componentRoot as any)[themeStr];
+  const theme = (themeRoot as any)[themeStr];
 
   return (
     <GraphQlClientProvider>
@@ -43,7 +43,7 @@ App.getInitialProps = async (
   const themeCookie = getCookie("theme", { req, res });
   const theme =
     typeof themeCookie === "string" &&
-    componentRoot.validThemes.includes(themeCookie)
+    themeRoot.validThemes.includes(themeCookie)
       ? themeCookie
       : "light";
 

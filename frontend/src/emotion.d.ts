@@ -1,7 +1,5 @@
 import "@emotion/react";
 declare module "@emotion/react" {
-  type Mergeable<T> = { [key in keyof T]?: Mergeable<T[key]> };
-
   export interface ThemeColors {
     primary: ThemeColor;
     text: ThemeTextColor;
@@ -25,9 +23,24 @@ declare module "@emotion/react" {
     headerAlign: string;
   }
 
+  export interface ThemeBreakpoints {
+    small: string;
+    medium: string;
+    large: string;
+
+    print(): string;
+    up(_breakpoint: ThemeBreakpointsKeys): string;
+    down(_breakpoint: ThemeBreakpointsKeys): string;
+  }
+  export type ThemeBreakpointsKeys = keyof Omit<
+    ThemeBreakpoints,
+    "print" | "up"
+  >;
+
   export interface Theme {
     colors: ThemeColors;
     spacing(_unit: number): string;
     table: ThemeTable;
+    breakpoints: ThemeBreakpoints;
   }
 }

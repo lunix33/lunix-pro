@@ -8,13 +8,16 @@ export interface TableProps<D> {
   columns: ColumnProps<D>[];
   emptyCell?: ReactNode;
   emptyTable?: ReactNode;
+  className?: string;
 }
 
 export type ColumnProps<D> = {
-  label?: ReactNode;
+  label?: string;
   dataValue?: keyof D;
   render?: TransformFn<any, D>;
   fit?: boolean;
+  textAlign?: "left" | "right" | "center";
+  mobileTextAlign?: "left" | "right" | "center";
 };
 
 export interface CellProps<D> {
