@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 
 export type TransformFn<V, D> = (_value: V, _data: D) => ReactNode;
+export type PageOptions = Omit<PagerProps, "span">;
 
 export interface TableProps<D> {
   data?: D[];
@@ -9,6 +10,7 @@ export interface TableProps<D> {
   emptyCell?: ReactNode;
   emptyTable?: ReactNode;
   className?: string;
+  page?: PageOptions;
 }
 
 export type ColumnProps<D> = {
@@ -39,4 +41,12 @@ export interface EmptyTableProps {
 
 export interface EmptyCellProps {
   children: ReactNode;
+}
+
+export interface PagerProps {
+  span: number;
+  count: number;
+  offset: number;
+  limit: number;
+  onPageChange: (_newOffset: number) => void;
 }

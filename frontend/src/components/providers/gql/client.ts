@@ -1,10 +1,11 @@
 import {
   ApolloClient,
   createHttpLink,
-  InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+
+import { cache } from "./cache";
 
 let gqlClient: ApolloClient<NormalizedCacheObject> | undefined;
 export function getWebClient(): ApolloClient<NormalizedCacheObject> {
@@ -23,7 +24,7 @@ export function getWebClient(): ApolloClient<NormalizedCacheObject> {
 
     gqlClient = new ApolloClient({
       link: authLink.concat(httpLink),
-      cache: new InMemoryCache(),
+      cache,
     });
   }
   return gqlClient;

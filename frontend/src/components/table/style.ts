@@ -124,3 +124,18 @@ export const cellStyles = style({
     },
   }),
 });
+
+export const pagerStyles = style({
+  tfoot: (theme) => ({
+    display: "flex",
+    justifyContent: "center",
+    gap: theme.spacing(1),
+    padding: theme.spacing(1),
+    backgroundColor: theme.colors.primary.code,
+    color: theme.colors.textColor(theme.colors.primary),
+
+    "& a": {
+      color: theme.colors.textColor(theme.colors.primary),
+    },
+  }),
+});

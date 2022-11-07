@@ -6,6 +6,7 @@ import { TableRow } from "./TableRow";
 
 import { tableStyles } from "./style";
 import { TableProps } from "./types";
+import { Pager } from "./Pager";
 
 export function Table<D>({
   // children,
@@ -15,6 +16,7 @@ export function Table<D>({
   emptyCell,
   emptyTable,
   className,
+  page,
 }: TableProps<D>): ReactElement {
   return (
     <div css={tableStyles.scroll}>
@@ -42,6 +44,7 @@ export function Table<D>({
               ))
             )}
           </tbody>
+          {page && <Pager span={columns.length} {...page} />}
         </>
       </table>
     </div>
