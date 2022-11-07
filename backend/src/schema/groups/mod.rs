@@ -19,8 +19,11 @@ impl GroupQuery {
     async fn get_groups<'a>(
         &self,
         ctx: &'a Context<'_>,
-        #[graphql(desc = "When true, the deleted groups will also be part of the results.")]
-        with_deleted: Option<bool>,
+        #[graphql(
+            desc = "When true, the deleted groups will also be part of the results.",
+            default = false
+        )]
+        with_deleted: bool,
         #[graphql(desc = "Optional pagination option")] page: Option<PageOptions>,
     ) -> ApplicationResult<PagedResult<group::Group>> {
         get_db_connection(ctx, |mut conn| {
@@ -32,7 +35,7 @@ impl GroupQuery {
                     .into_iter()
                     .map(group::Group::from)
                     .collect();
-            let count = db::models::Group::count(conn).map_err(|err| {
+            let count = db::models::Group::count(&mut conn, with_deleted).map_err(|err| {
                 ApplicationError::Fetch(field_name(ctx), None, Some(Arc::new(err)))
             })?;
 

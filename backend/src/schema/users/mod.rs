@@ -24,8 +24,11 @@ impl UsersQuery {
     async fn get_users<'a>(
         &self,
         ctx: &'a Context<'_>,
-        #[graphql(desc = "When true, the deleted users will also be part of the results.")]
-        with_deleted: Option<bool>,
+        #[graphql(
+            desc = "When true, the deleted users will also be part of the results.",
+            default = false
+        )]
+        with_deleted: bool,
         #[graphql(desc = "Optional pagination option")] page: Option<PageOptions>,
     ) -> ApplicationResult<PagedResult<user::User>> {
         get_db_connection(ctx, move |mut conn| {
@@ -34,7 +37,7 @@ impl UsersQuery {
                 .into_iter()
                 .map(user::User::from)
                 .collect();
-            let count = db::models::User::count(&mut conn).map_err(|err| {
+            let count = db::models::User::count(&mut conn, with_deleted).map_err(|err| {
                 ApplicationError::Fetch(field_name(ctx), None, Some(Arc::new(err)))
             })?;
 

@@ -11,9 +11,15 @@ pub struct Group {
 }
 
 impl Group {
-    pub fn count(conn: &mut DbConnection) -> DbResult<i64> {
+    pub fn count(conn: &mut DbConnection, with_deleted: bool) -> DbResult<i64> {
         use self::groups::dsl::*;
-        Ok(groups.select(count_star()).first(conn)?)
+
+        let mut query = groups.into_boxed().order_by(created_on);
+        if with_deleted == false {
+            query = query.filter(deleted_on.is_null())
+        }
+
+        Ok(query.select(count_star()).first(conn)?)
     }
 
     /// Get a list of all groups
@@ -27,12 +33,10 @@ impl Group {
     /// The list of groups.
     pub fn get_groups(
         conn: &mut DbConnection,
-        with_deleted: Option<bool>,
+        with_deleted: bool,
         page: Option<PageOptions>,
     ) -> DbResult<Vec<Self>> {
         use self::groups::dsl::*;
-
-        let with_deleted = with_deleted.unwrap_or(false);
 
         let mut query = groups.into_boxed().order_by(created_on);
         if with_deleted == false {
