@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 
 import { Cell } from "./Cell";
 
-import { rowStyles } from "./style";
+import { useRowStyles } from "./style";
 import { TableRowProps } from "./types";
 
 export function TableRow<D = any>({
@@ -10,8 +10,9 @@ export function TableRow<D = any>({
   emptyCell,
   headers,
 }: TableRowProps<D>): ReactElement {
+  const styles = useRowStyles();
   return (
-    <tr css={rowStyles.tr}>
+    <tr css={styles.tr}>
       {headers.map((h, idx) => (
         <Cell key={idx} data={data} header={h} empty={emptyCell} />
       ))}

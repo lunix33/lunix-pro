@@ -1,6 +1,6 @@
 import { ReactElement, isValidElement, ReactNode, useMemo } from "react";
 
-import { cellStyles, mobileBreakpoint } from "./style";
+import { useCellStyles, mobileBreakpoint } from "./style";
 import { CellProps } from "./types";
 
 export function Cell<D>({
@@ -8,6 +8,7 @@ export function Cell<D>({
   header,
   empty = null,
 }: CellProps<D>): ReactElement {
+  const styles = useCellStyles();
   // const { transform } = header.props;
   const {
     render,
@@ -35,10 +36,10 @@ export function Cell<D>({
             textAlign: mobileTextAlign,
           },
         }),
-        cellStyles.td,
-        fit && cellStyles.fit,
-        label == null && cellStyles.noLabel,
-        empty == null && display == null && cellStyles.hide,
+        styles.td,
+        fit && styles.fit,
+        label == null && styles.noLabel,
+        empty == null && display == null && styles.hide,
       ]}
     >
       {display == null ? empty : display}

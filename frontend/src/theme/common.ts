@@ -17,7 +17,7 @@ export const common: Mergeable<Theme> = {
     columnWidth: "150px",
     headerAlign: "center",
   },
-  spacing: (unit: number) => `${unit * 0.5}rem`,
+  spacing: (unit: number) => `${unit * 0.5}em`,
   breakpoints: {
     small: "0px",
     medium: "640px",

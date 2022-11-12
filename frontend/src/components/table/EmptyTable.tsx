@@ -1,12 +1,13 @@
 import { ReactElement } from "react";
 
-import { emptyTableStyles } from "./style";
+import { useEmptyTableStyles } from "./style";
 import { EmptyTableProps } from "./types";
 
 export function EmptyTable({ children, span }: EmptyTableProps): ReactElement {
+  const styles = useEmptyTableStyles();
   return (
     <tr>
-      <td css={emptyTableStyles.td} colSpan={span}>
+      <td css={styles.td} colSpan={span}>
         {children}
       </td>
     </tr>

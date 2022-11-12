@@ -1,15 +1,14 @@
 import { ThemeBreakpointsKeys } from "@emotion/react";
 import { opacify } from "polished";
-import { style } from "@t";
+import { makeStyles } from "@t";
 
 export const mobileBreakpoint: ThemeBreakpointsKeys = "medium";
 
-export const tableStyles = style({
+export const useTableStyles = makeStyles({
   table: (theme) => ({
-    "&, & thead, & tbody, & tr, & td, & th, caption": {
-      display: "block",
-      [theme.breakpoints.up(mobileBreakpoint)]: {
-        display: "revert",
+    [theme.breakpoints.down(mobileBreakpoint)]: {
+      "&, & thead, & tbody, & tr, & td, & th, caption, tfoot": {
+        display: "block",
       },
     },
 
@@ -21,16 +20,17 @@ export const tableStyles = style({
       borderRadius: `0 0 ${theme.table.roundness} ${theme.table.roundness}`,
     },
   }),
-  thead: (theme) => ({
-    position: "absolute",
-    top: "-9999px",
-    left: "-9999px",
-    [theme.breakpoints.up(mobileBreakpoint)]: {
-      position: "revert",
-      top: "revert",
-      left: "revert",
+  headers: (theme) => ({
+    [theme.breakpoints.down(mobileBreakpoint)]: {
+      position: "absolute",
+      top: "-9999px",
+      left: "-9999px",
     },
-
+  }),
+  headContent: (theme) => ({
+    padding: theme.spacing(1),
+  }),
+  thead: (theme) => ({
     color: theme.colors.textColor(theme.colors.primary),
     backgroundColor: theme.colors.primary.code,
   }),
@@ -53,14 +53,14 @@ export const tableStyles = style({
   }),
 });
 
-export const emptyTableStyles = style({
+export const useEmptyTableStyles = makeStyles({
   td: (theme) => ({
     padding: theme.spacing(1),
     textAlign: "center",
   }),
 });
 
-export const rowStyles = style({
+export const useRowStyles = makeStyles({
   tr: (theme) => ({
     padding: `${theme.spacing(1)} ${theme.spacing(1)} 0 ${theme.spacing(1)}`,
     "&:nth-of-type(even)": {
@@ -69,7 +69,7 @@ export const rowStyles = style({
   }),
 });
 
-export const columnsStyles = style({
+export const useColumnsStyles = makeStyles({
   th: (theme) => ({
     padding: theme.spacing(1),
     minWidth: theme.table.columnWidth,
@@ -82,7 +82,7 @@ export const columnsStyles = style({
   },
 });
 
-export const cellStyles = style({
+export const useCellStyles = makeStyles({
   td: (theme) => ({
     padding: `${theme.spacing(3)} 0 ${theme.spacing(1)} ${theme.spacing(1)}`,
     minWidth: theme.table.columnWidth,
@@ -125,7 +125,7 @@ export const cellStyles = style({
   }),
 });
 
-export const pagerStyles = style({
+export const usePagerStyles = makeStyles({
   tfoot: (theme) => ({
     display: "flex",
     justifyContent: "center",

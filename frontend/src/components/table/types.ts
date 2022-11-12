@@ -6,6 +6,7 @@ export type PageOptions = Omit<PagerProps, "span">;
 export interface TableProps<D> {
   data?: D[];
   caption: string;
+  headerContent?: ReactNode;
   columns: ColumnProps<D>[];
   emptyCell?: ReactNode;
   emptyTable?: ReactNode;

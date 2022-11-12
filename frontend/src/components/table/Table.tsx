@@ -4,7 +4,7 @@ import { EmptyTable } from "./EmptyTable";
 import { Column } from "./Column";
 import { TableRow } from "./TableRow";
 
-import { tableStyles } from "./style";
+import { useTableStyles } from "./style";
 import { TableProps } from "./types";
 import { Pager } from "./Pager";
 
@@ -12,19 +12,28 @@ export function Table<D>({
   // children,
   data = [],
   caption,
+  headerContent,
   columns = [],
   emptyCell,
   emptyTable,
   className,
   page,
 }: TableProps<D>): ReactElement {
+  const styles = useTableStyles();
   return (
-    <div css={tableStyles.scroll}>
-      <table className={className} css={tableStyles.table}>
+    <div css={styles.scroll}>
+      <table className={className} css={styles.table}>
         <>
-          <caption css={tableStyles.caption}>{caption}</caption>
-          <thead>
-            <tr css={tableStyles.thead}>
+          <caption css={styles.caption}>{caption}</caption>
+          <thead css={styles.thead}>
+            {headerContent && (
+              <tr>
+                <td colSpan={columns.length} css={styles.headContent}>
+                  {headerContent}
+                </td>
+              </tr>
+            )}
+            <tr css={styles.headers}>
               {columns.map((c, idx) => (
                 <Column key={idx} {...c} />
               ))}
