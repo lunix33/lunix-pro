@@ -4,10 +4,10 @@ import { appWithTranslation } from "next-i18next";
 import { getCookie } from "cookies-next";
 
 import GraphQlClientProvider from "@c/providers/gql";
-import Global from "@c/layouts/global";
-import Header from "@c/layouts/header";
-import Main from "@c/layouts/main";
-import Footer from "@c/layouts/footer";
+import Global from "@l/global";
+import Header from "@l/header";
+import Main from "@l/main";
+import Footer from "@l/footer";
 import * as themeRoot from "@t";
 
 import "reset-css";

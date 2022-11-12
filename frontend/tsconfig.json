@@ -17,7 +17,9 @@
     "types": ["@emotion/react/types/css-prop"],
     "paths": {
       "@t": ["theme"],
-      "@c/*": ["components/*"]
+      "@c/*": ["components/*"],
+      "@l/*": ["layout/*"],
+      "@f/*": ["features/*"]
     },
     "baseUrl": "src"
   },
