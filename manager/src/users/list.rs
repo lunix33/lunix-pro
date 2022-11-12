@@ -9,7 +9,7 @@ pub fn handle_command(args: &ListArgs, db_url: &str) {
     let mut conn = pool.get().unwrap();
 
     let with_deleted = args.deleted;
-    let users = User::get_users(&mut conn, Some(with_deleted), None).unwrap();
+    let users = User::get_users(&mut conn, with_deleted, None).unwrap();
 
     for user in users {
         println!("{user:?}");

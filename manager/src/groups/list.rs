@@ -9,7 +9,7 @@ pub fn handle_command(args: &ListArgs, db_url: &str) {
     let mut conn = pool.get().unwrap();
 
     let with_deleted = args.deleted;
-    let groups = Group::get_groups(&mut conn, Some(with_deleted), None).unwrap();
+    let groups = Group::get_groups(&mut conn, with_deleted, None).unwrap();
 
     for group in groups {
         println!("{group:?}");
