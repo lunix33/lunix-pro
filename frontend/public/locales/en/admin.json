@@ -1,0 +1,16 @@
+{
+    "home": "Admin Home",
+    "showDeleted": "Show deleted entries",
+
+    "user": {
+        "username": "Username",
+        "displayName": "Display name"
+    },
+
+    "commonFields": {
+        "createdOn": "Created on",
+        "deletedOn": "Deleted on"
+    },
+
+    "userTableCaption": "List of users"
+}

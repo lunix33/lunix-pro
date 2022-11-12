@@ -1,84 +1,134 @@
 import { useRouter } from "next/router";
-import { ReactElement } from "react";
-import { useQuery, gql } from "@apollo/client";
+import Link from "next/link";
+import { ChangeEvent, ReactElement, useEffect, useMemo, useState } from "react";
+import { useQuery } from "@apollo/client";
+import { useTranslation } from "next-i18next";
 
-import Table from "@c/table";
+import Table, { ColumnProps, PageOptions } from "@c/table";
+import { PagedData } from "@c/types";
+import Icon from "@c/icon";
+import Checkbox from "@c/inputs/Checkbox";
 
 import { UsersData } from "./types";
+import { usersQuery } from "./queries";
+import { useStyles } from "./styles";
 
 export function Users(): ReactElement {
-  const { query } = useRouter();
+  const styles = useStyles();
+  const { t } = useTranslation("admin");
+  const { query, push } = useRouter();
+  const withDeleted = query.withDeleted === "true";
+
+  // Page state.
+  const [pageOptions, setPageOptions] = useState<
+    Omit<PageOptions, "onPageChange">
+  >({
+    count: 0,
+    offset: 0,
+    limit: 10,
+  });
+
+  // Data query.
   const { loading, data, fetchMore } = useQuery<{
-    users: { getUsers: UsersData[] };
-  }>(
-    gql`
-      query Users($withDeleted: Boolean!, $offset: Int!, $limit: Int!) {
-        users {
-          getUsers(
-            withDeleted: $withDeleted
-            page: { offset: $offset, limit: $limit }
-          ) {
-            username
-            displayName
-            createdOn
-          }
-        }
-      }
-    `,
-    {
-      variables: {
-        withDeleted: query.deleted === "true",
-        offset: 0,
-        limit: 5,
+    users: { getUsers: PagedData<UsersData> };
+  }>(usersQuery, {
+    variables: {
+      withDeleted,
+      offset: pageOptions.offset,
+      limit: pageOptions.limit,
+    },
+  });
+
+  useEffect(() => {
+    setPageOptions((u) => ({
+      ...u,
+      count: data?.users.getUsers.count ?? 0,
+    }));
+  }, [data]);
+
+  // Columns
+  const columns = useMemo(() => {
+    const cols: ColumnProps<UsersData>[] = [
+      {
+        dataValue: "username",
+        label: t("user.username"),
       },
+      {
+        dataValue: "displayName",
+        label: t("user.displayName"),
+      },
+      {
+        dataValue: "createdOn",
+        label: t("commonFields.createdOn"),
+      },
+    ];
+
+    if (withDeleted) {
+      cols.push({
+        dataValue: "deletedOn",
+        label: t("commonFields.deletedOn"),
+      });
     }
-  );
+
+    cols.push({
+      render: (_v, u) => (
+        <div css={styles.actions}>
+          <Link title="edit" href={`/admin/users/${u.username}`}>
+            <Icon icon="pen" />
+          </Link>
+          <Icon icon="trash" />
+        </div>
+      ),
+      fit: true,
+    });
+    return cols;
+  }, [t, withDeleted, styles]);
+
+  const handleWithDeletedChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { checked } = e.target;
+    push(encodeURI(`?withDeleted=${checked}`));
+  };
 
   return (
-    <Table
-      data={[
-        {
-          username: "john",
-          displayName: "John Doe",
-          createdOn: "2022-01-10T22:33:00",
-        },
-        {
-          username: "joe",
-          displayName: "Joe Doe",
-          createdOn: "2022-10-10T13:00:00",
-        },
-        ,
-        {
-          username: "Jane",
-          displayName: "Jane Doe",
-          createdOn: "2022-08-3T08:45:00",
-        },
-        {
-          username: "Gill",
-          displayName: "Gill Doe",
-          createdOn: "2022-02-24T13:22:00",
-        },
-        ,
-        {
-          username: "Handry",
-          displayName: "Hanry Doe",
-          createdOn: "2022-04-10T16:44:00",
-        },
-      ]}
-      caption="List of users"
-      columns={[
-        { dataValue: "username", label: "Username" },
-        { dataValue: "displayName", label: "Display name" },
-        {
-          dataValue: "createdOn",
-          label: "Created on",
-        },
-        {
-          render: (v, a) => "some",
-          fit: true,
-        },
-      ]}
-      emptyTable="Oups no data :("
-    />
+    <div>
+      <p>
+        <Link href="/admin">{`< ${t("home")}`}</Link>
+      </p>
+      <Table
+        css={(theme) => ({
+          margin: `${theme.spacing(1)} auto`,
+        })}
+        data={data?.users.getUsers.data}
+        caption={t("userTableCaption")}
+        headerContent={
+          <div>
+            <Checkbox
+              name="with_deleted"
+              checked={withDeleted}
+              label={t("showDeleted")}
+              onChange={handleWithDeletedChange}
+            />
+          </div>
+        }
+        columns={columns}
+        emptyTable={
+          loading
+            ? t("loading_table", { ns: "common" })
+            : t("empty_table", { ns: "common" })
+        }
+        emptyCell={t("empty_table_cell", { ns: "common" })}
+        page={{
+          ...pageOptions,
+          onPageChange: (newOffset) => {
+            fetchMore({
+              variables: {
+                offset: newOffset,
+              },
+            });
+            setPageOptions((o) => ({ ...o, offset: newOffset }));
+          },
+        }}
+      />
+    </div>
   );
 }
