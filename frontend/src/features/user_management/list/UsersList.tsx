@@ -1,31 +1,37 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ChangeEvent, ReactElement, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, ReactElement, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useTranslation } from "next-i18next";
 
 import Table, { ColumnProps, PageOptions } from "@c/table";
-import { PagedData } from "@c/types";
-import Icon from "@c/icon";
 import Checkbox from "@c/inputs/Checkbox";
+import Icon from "@c/icon";
+import { PagedData } from "@c/types";
 
 import { UsersData } from "./types";
 import { usersQuery } from "./queries";
 import { useStyles } from "./styles";
 
-export function Users(): ReactElement {
+export function UsersList(): ReactElement {
   const styles = useStyles();
   const { t } = useTranslation("admin");
-  const { query, push } = useRouter();
-  const withDeleted = query.withDeleted === "true";
+  const router = useRouter();
+  const withDeleted = router.query.withDeleted === "true";
 
   // Page state.
-  const [pageOptions, setPageOptions] = useState<
-    Omit<PageOptions, "onPageChange">
-  >({
+  const [pageOptions, setPageOptions] = useState<PageOptions>({
     count: 0,
     offset: 0,
     limit: 10,
+    onPageChange: (newOffset) => {
+      fetchMore({
+        variables: {
+          offset: newOffset,
+        },
+      });
+      setPageOptions((o) => ({ ...o, offset: newOffset }));
+    },
   });
 
   // Data query.
@@ -37,36 +43,35 @@ export function Users(): ReactElement {
       offset: pageOptions.offset,
       limit: pageOptions.limit,
     },
+    onCompleted: (data) => {
+      setPageOptions((u) => ({
+        ...u,
+        count: data?.users.getUsers.count ?? 0,
+      }));
+    },
   });
-
-  useEffect(() => {
-    setPageOptions((u) => ({
-      ...u,
-      count: data?.users.getUsers.count ?? 0,
-    }));
-  }, [data]);
 
   // Columns
   const columns = useMemo(() => {
     const cols: ColumnProps<UsersData>[] = [
       {
         dataValue: "username",
-        label: t("user.username"),
+        label: t("models.user.username"),
       },
       {
         dataValue: "displayName",
-        label: t("user.displayName"),
+        label: t("models.user.displayName"),
       },
       {
         dataValue: "createdOn",
-        label: t("commonFields.createdOn"),
+        label: t("models.createdOn"),
       },
     ];
 
     if (withDeleted) {
       cols.push({
         dataValue: "deletedOn",
-        label: t("commonFields.deletedOn"),
+        label: t("models.deletedOn"),
       });
     }
 
@@ -84,28 +89,31 @@ export function Users(): ReactElement {
     return cols;
   }, [t, withDeleted, styles]);
 
-  const handleWithDeletedChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { checked } = e.target;
-    push(encodeURI(`?withDeleted=${checked}`));
+  const handleWithDeletedChange = ({
+    target: { checked },
+  }: ChangeEvent<HTMLInputElement>) => {
+    router.query.withDeleted = String(checked);
+    router.push(router);
   };
 
   return (
     <div>
       <p>
-        <Link href="/admin">{`< ${t("home")}`}</Link>
+        <Link href="/admin">{`< ${t("pages.home.title")}`}</Link>
       </p>
+      <h1>{t("pages.usersList.title")}</h1>
       <Table
         css={(theme) => ({
           margin: `${theme.spacing(1)} auto`,
         })}
         data={data?.users.getUsers.data}
-        caption={t("userTableCaption")}
+        caption={t("pages.usersList.tableCaption")}
         headerContent={
           <div>
             <Checkbox
               name="with_deleted"
               checked={withDeleted}
-              label={t("showDeleted")}
+              label={t("pages.showDeleted")}
               onChange={handleWithDeletedChange}
             />
           </div>
@@ -117,17 +125,7 @@ export function Users(): ReactElement {
             : t("empty_table", { ns: "common" })
         }
         emptyCell={t("empty_table_cell", { ns: "common" })}
-        page={{
-          ...pageOptions,
-          onPageChange: (newOffset) => {
-            fetchMore({
-              variables: {
-                offset: newOffset,
-              },
-            });
-            setPageOptions((o) => ({ ...o, offset: newOffset }));
-          },
-        }}
+        page={pageOptions}
       />
     </div>
   );

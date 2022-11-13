@@ -10,8 +10,8 @@ import { PagedData } from "@c/types";
 import { GroupsData } from "./types";
 import { groupsQuery } from "./queries";
 
-export function Groups(): ReactElement {
-  const { t } = useTranslation();
+export function GroupsList(): ReactElement {
+  const { t } = useTranslation("admin");
   const { query, push } = useRouter();
 
   const [pageOptions, setPageOptions] = useState<

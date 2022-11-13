@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
 
-export function User(): ReactElement {
+export function UserDetail(): ReactElement {
   return <div>User page</div>;
 }

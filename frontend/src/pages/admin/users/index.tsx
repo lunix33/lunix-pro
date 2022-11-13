@@ -2,7 +2,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { ReactElement } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-import Users from "@c/pages/admin/users";
+import { UsersList } from "@f/user_management";
 
 export async function getServerSideProps({
   locale,
@@ -17,7 +17,7 @@ export async function getServerSideProps({
 export default function UsersPage(): ReactElement {
   return (
     <div css={{ padding: "1rem" }} className="hello">
-      <Users />
+      <UsersList />
     </div>
   );
 }

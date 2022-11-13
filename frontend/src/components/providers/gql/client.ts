@@ -29,3 +29,13 @@ export function getWebClient(): ApolloClient<NormalizedCacheObject> {
   }
   return gqlClient;
 }
+
+export function getServerClient(): ApolloClient<NormalizedCacheObject> {
+  if (gqlClient == null) {
+    gqlClient = new ApolloClient({
+      uri: "/api",
+      cache,
+    });
+  }
+  return gqlClient;
+}
