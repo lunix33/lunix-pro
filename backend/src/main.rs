@@ -9,11 +9,11 @@ use db::{connect_pool, DbPool};
 use log::info;
 use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
 
-mod result;
-use result::*;
 mod endpoints;
+mod result;
 mod schema;
 mod user_extractor;
+use result::*;
 
 /// Application entry point.
 #[actix_web::main]
