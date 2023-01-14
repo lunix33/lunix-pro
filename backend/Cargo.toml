@@ -18,5 +18,5 @@ chrono = { version = "0.4", features = [ "serde" ] }
 chrono-tz = { version = "0.8" }
 db = { path = "../db" }
 argon2 = { version = "0.4", features = [ "std" ] }
-base64 = { version = "0.13" }
+base64 = { version = "0.21" }
 async-trait = { version = "0.1" }

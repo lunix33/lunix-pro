@@ -2,6 +2,7 @@ use std::{pin::Pin, sync::Arc};
 
 use actix_web::{dev::Payload, rt::task, web::Data, FromRequest, HttpRequest};
 use backend::Argon2Hasher;
+use base64::Engine;
 use db::{models::User, DbPool};
 
 use crate::{ApplicationError, ApplicationResult};
@@ -39,9 +40,12 @@ impl FromRequest for UserExtractor {
                         .get(1)
                         .unwrap_or(&"")
                         .to_string();
-                    let decoded_token = base64::decode(encoded_token).map_err(|e| {
-                        ApplicationError::TokenValidation(ip.clone(), None, Arc::new(e))
-                    })?;
+
+                    let decoded_token = base64::engine::general_purpose::STANDARD
+                        .decode(encoded_token)
+                        .map_err(|e| {
+                            ApplicationError::TokenValidation(ip.clone(), None, Arc::new(e))
+                        })?;
                     let composed_token = String::from_utf8_lossy(&decoded_token);
 
                     let split_token = composed_token.split(":").collect::<Vec<&str>>();
