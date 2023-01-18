@@ -1,0 +1,14 @@
+@use "./light";
+
+$valid-themes: (
+  light: light.$theme,
+);
+
+@each $theme, $map in $valid-themes {
+  .theme_#{$theme} {
+    @each $key, $value in $map {
+      $var: "--#{$key}";
+      #{$var}: $value;
+    }
+  }
+}

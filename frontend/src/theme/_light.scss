@@ -1,0 +1,12 @@
+@use "sass:color";
+@use "./theme-vars";
+
+$_theme_primary: blue;
+
+$theme: (
+  #{theme-vars.$color-primary}: $_theme_primary,
+  #{theme-vars.$color-primary-light}: color.scale($_theme_primary, $lightness:
+        90%),
+  #{theme-vars.$text-normal}: hsla(0deg, 0%, 5%, 1),
+  #{theme-vars.$text-contrast}: hsla(0deg, 0%, 95%, 1)
+);

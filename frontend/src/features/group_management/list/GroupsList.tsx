@@ -45,7 +45,6 @@ export function GroupsList(): ReactElement {
       </p>
 
       <Table
-        css={{ margin: "1rem auto auto auto" }}
         data={data?.groups.getGroups.data}
         caption="List of groups"
         columns={[

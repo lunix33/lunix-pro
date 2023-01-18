@@ -1,0 +1,147 @@
+/* **** Table **** */
+
+@use "theme/components/table";
+@use "theme/func";
+@use "theme/mixins";
+
+.table {
+  @include mixins.breakpoint_up(table.$mobile-breakpoint) {
+    overflow-x: auto;
+  }
+
+  table {
+    @include mixins.breakpoint_down(table.$mobile-breakpoint) {
+      &,
+      & thead,
+      & tbody,
+      & tr,
+      & td,
+      & th,
+      caption,
+      tfoot {
+        display: "block";
+      }
+    }
+
+    @include mixins.breakpoint_up(table.$mobile-breakpoint) {
+      border-radius: 0 0 table.$border-radius table.$border-radius;
+    }
+
+    border-collapse: separate;
+    border: table.$border-thickness solid table.$bg-color;
+    border-radius: table.$border-radius;
+  }
+
+  caption {
+    background-color: table.$bg-color;
+    color: table.$text-color;
+    padding: func.spacing(1);
+
+    @include mixins.breakpoint_up(table.$mobile-breakpoint) {
+      border-top: table.$border-thickness solid table.$bg-color;
+      border-left: table.$border-thickness solid table.$bg-color;
+      border-right: table.$border-thickness solid table.$bg-color;
+      border-radius: table.$border-radius table.$border-radius 0 0;
+    }
+  }
+
+  thead {
+    background-color: table.$bg-color;
+    color: table.$text-color;
+  }
+
+  .headers {
+    @include mixins.breakpoint_down(table.$mobile-breakpoint) {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+  }
+
+  .header_content {
+    padding: func.spacing(1);
+  }
+}
+
+.empty_table {
+  padding: func.spacing(1);
+  text-align: center;
+}
+
+.row {
+  padding: func.spacing(1) func.spacing(1) 0 func.spacing(1);
+
+  &:nth-of-type(even) {
+    background-color: table.$even-bg-color;
+  }
+}
+
+.col {
+  padding: func.spacing(1);
+  min-width: table.$col-min-width;
+  text-align: table.$header-align;
+
+  &.fit {
+    min-width: auto;
+    white-space: nowrap;
+    width: 0%;
+  }
+}
+
+.cell {
+  padding: func.spacing(3) 0 func.spacing(1) func.spacing(1);
+  min-width: table.$col-min-width;
+  text-align: attr("data-mobile-align");
+
+  &::before {
+    content: attr(data-label);
+    float: left;
+    position: relative;
+    top: func.spacing(-2.5);
+    left: func.spacing(-1);
+    overflow: visible;
+    width: 0;
+    white-space: nowrap;
+    font-style: italic;
+  }
+
+  @include mixins.breakpoint_up(table.$mobile-breakpoint) {
+    padding: func.spacing(1);
+    text-align: attr("data-align");
+
+    &::before {
+      display: none;
+    }
+  }
+
+  &.fit {
+    @include mixins.breakpoint_up(table.$mobile-breakpoint) {
+      min-width: auto;
+      white-space: nowrap;
+      width: 0%;
+    }
+  }
+
+  &.no_label {
+    padding: 0 0 func.spacing(1) 0;
+  }
+
+  &.hide {
+    @include mixins.breakpoint_down(table.$mobile-breakpoint) {
+      display: none !important;
+    }
+  }
+}
+
+.pager {
+  display: flex;
+  justify-content: center;
+  gap: func.spacing(1);
+  padding: func.spacing(1);
+  background-color: table.$bg-color;
+  color: table.$text-color;
+
+  & a {
+    color: table.$text-color;
+  }
+}

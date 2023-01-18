@@ -1,6 +1,9 @@
+"use client";
+
 import { ReactElement, useMemo } from "react";
-import { usePagerStyles } from "./style";
+
 import { PagerProps } from "./types";
+import classes from "./styles.module.scss";
 
 const displayLimit = 3;
 
@@ -11,7 +14,6 @@ export function Pager({
   limit,
   onPageChange,
 }: PagerProps): ReactElement | null {
-  const styles = usePagerStyles();
   const [currentPage, maxPage, renderPre, renderPost] = useMemo(() => {
     const currentPage = Math.floor(offset / limit);
     const maxPage = Math.ceil(count / limit);
@@ -31,7 +33,7 @@ export function Pager({
     <tfoot>
       <tr>
         <td colSpan={span}>
-          <div css={styles.tfoot}>
+          <div className={classes.pager}>
             {currentPage > 0 && (
               <a href="#" onClick={() => onPageChange(offset - limit)}>
                 {"< Previous"}

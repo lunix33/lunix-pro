@@ -1,0 +1,14 @@
+@use "../func";
+@use "../vars";
+@use "../theme-vars";
+
+$bg-color: func.theme-var(theme-vars.$color-primary);
+$even-bg-color: func.theme-var(theme-vars.$color-primary-light);
+$text-color: func.theme-var(theme-vars.$text-normal);
+
+$mobile-breakpoint: vars.$breakpoint-medium;
+
+$border-thickness: 1px;
+$border-radius: 5px;
+$col-min-width: 150px;
+$header-align: center;

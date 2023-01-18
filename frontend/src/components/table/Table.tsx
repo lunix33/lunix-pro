@@ -1,12 +1,15 @@
+"use client";
+
 import { ReactElement } from "react";
+import cls from "classnames";
 
 import { EmptyTable } from "./EmptyTable";
 import { Column } from "./Column";
 import { TableRow } from "./TableRow";
 
-import { useTableStyles } from "./style";
 import { TableProps } from "./types";
 import { Pager } from "./Pager";
+import classes from "./styles.module.scss";
 
 export function Table<D>({
   // children,
@@ -19,21 +22,20 @@ export function Table<D>({
   className,
   page,
 }: TableProps<D>): ReactElement {
-  const styles = useTableStyles();
   return (
-    <div css={styles.scroll}>
-      <table className={className} css={styles.table}>
+    <div className={cls(classes.table, className)}>
+      <table>
         <>
-          <caption css={styles.caption}>{caption}</caption>
-          <thead css={styles.thead}>
+          <caption>{caption}</caption>
+          <thead>
             {headerContent && (
               <tr>
-                <td colSpan={columns.length} css={styles.headContent}>
+                <td className={classes.header_content} colSpan={columns.length}>
                   {headerContent}
                 </td>
               </tr>
             )}
-            <tr css={styles.headers}>
+            <tr className={classes.headers}>
               {columns.map((c, idx) => (
                 <Column key={idx} {...c} />
               ))}

@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ChangeEvent, ReactElement, useMemo, useState } from "react";
@@ -11,10 +13,9 @@ import { PagedData } from "@c/types";
 
 import { UsersData } from "./types";
 import { usersQuery } from "./queries";
-import { useStyles } from "./styles";
+import classes from "./styles.module.scss";
 
 export function UsersList(): ReactElement {
-  const styles = useStyles();
   const { t } = useTranslation("admin");
   const router = useRouter();
   const withDeleted = router.query.withDeleted === "true";
@@ -77,7 +78,7 @@ export function UsersList(): ReactElement {
 
     cols.push({
       render: (_v, u) => (
-        <div css={styles.actions}>
+        <div className={classes.actions}>
           <Link title="edit" href={`/admin/users/${u.username}`}>
             <Icon icon="pen" />
           </Link>
@@ -87,7 +88,7 @@ export function UsersList(): ReactElement {
       fit: true,
     });
     return cols;
-  }, [t, withDeleted, styles]);
+  }, [t, withDeleted]);
 
   const handleWithDeletedChange = ({
     target: { checked },
@@ -103,9 +104,6 @@ export function UsersList(): ReactElement {
       </p>
       <h1>{t("pages.usersList.title")}</h1>
       <Table
-        css={(theme) => ({
-          margin: `${theme.spacing(1)} auto`,
-        })}
         data={data?.users.getUsers.data}
         caption={t("pages.usersList.tableCaption")}
         headerContent={

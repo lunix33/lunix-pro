@@ -1,0 +1,8 @@
+/* **** Main **** */
+
+@use "theme/func";
+
+.main {
+  border: 1px solid pink;
+  padding: func.spacing(1);
+}

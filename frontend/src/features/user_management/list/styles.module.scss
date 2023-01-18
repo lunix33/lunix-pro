@@ -1,0 +1,9 @@
+/* **** User management lit **** */
+
+@use "theme/func";
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  gap: func.spacing(1);
+}

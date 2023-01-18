@@ -1,0 +1,27 @@
+@use "./vars";
+
+/**
+ * Function used to compute a component spacing.
+ *
+ * # Arguments
+ * * `$spacing`: Number of spacing steps to be applied.
+ *
+ * # Returns
+ * The computed spacing.
+ */
+@function spacing($spacing) {
+  @return $spacing * vars.$spacing-step;
+}
+
+/**
+ * Function used to get a theme variable.
+ *
+ * # Arguments
+ * * `$key`: The key of the variable (see: `_theme-vars.scss`)
+ *
+ * # Returns
+ * The variable call to get the theme value.
+ */
+@function theme-var($key) {
+  @return var(--#{$key});
+}

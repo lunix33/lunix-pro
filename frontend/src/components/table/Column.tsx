@@ -1,15 +1,17 @@
-import { ReactElement } from "react";
+"use client";
 
-import { useColumnsStyles } from "./style";
+import { ReactElement } from "react";
+import cls from "classnames";
+
 import { ColumnProps } from "./types";
+import classes from "./styles.module.scss";
 
 export function Column<D>({
   label,
   fit = false,
 }: ColumnProps<D>): ReactElement {
-  const styles = useColumnsStyles();
   return (
-    <th css={[styles.th, (fit && styles.fit) || null]} scope="col">
+    <th className={cls(classes.col, fit && classes.fit)} scope="col">
       {label}
     </th>
   );

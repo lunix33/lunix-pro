@@ -1,9 +1,12 @@
+"use client";
+
 import { ReactElement } from "react";
+import cls from "classnames";
 
-import { useStyles } from "./styles";
 import { CheckboxProps } from "./types";
+import classes from "./styles.module.scss";
 
-export function Checkbox({
+export default function Checkbox({
   name,
   label,
   id,
@@ -11,9 +14,8 @@ export function Checkbox({
   className,
   ...props
 }: CheckboxProps): ReactElement {
-  const styles = useStyles();
   return (
-    <label css={styles.label} className={className}>
+    <label className={cls(classes.label, className)}>
       <input
         id={id ?? name}
         name={name}
@@ -25,3 +27,5 @@ export function Checkbox({
     </label>
   );
 }
+
+export type { CheckboxProps };

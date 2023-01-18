@@ -1,13 +1,14 @@
+"use client";
+
 import { ReactElement } from "react";
 
-import { useEmptyTableStyles } from "./style";
 import { EmptyTableProps } from "./types";
+import classes from "./styles.module.scss";
 
 export function EmptyTable({ children, span }: EmptyTableProps): ReactElement {
-  const styles = useEmptyTableStyles();
   return (
     <tr>
-      <td css={styles.td} colSpan={span}>
+      <td className={classes.empty_table} colSpan={span}>
         {children}
       </td>
     </tr>

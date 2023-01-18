@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactElement } from "react";
 
 export function UserDetail(): ReactElement {

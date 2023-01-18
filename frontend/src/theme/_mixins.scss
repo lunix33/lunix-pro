@@ -1,0 +1,32 @@
+/** Mixin used to add a media query for print styles. */
+@mixin print_media {
+    @media print {
+        @content;
+    }
+}
+
+/**
+ * Mixin used to add a media query for screen print of at
+ * least the specified size.
+ * 
+ * # Arguments
+ * * `$breakpoint`: The minimum size of the screen.
+ */
+@mixin breakpoint_up($breakpoint) {
+    @media screen and (min-width: $breakpoint) {
+        @content;
+    }
+}
+
+/**
+ * Mixin used to add a media query for screen print of at
+ * most the specified size.
+ * 
+ * # Arguments
+ * * `$breakpoint`: The maximum size of the screen.
+ */
+@mixin breakpoint_down($breakpoint) {
+    @media screen and (max-width: $breakpoint) {
+        @content;
+    }
+}

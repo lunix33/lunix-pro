@@ -1,14 +1,16 @@
-import { ReactElement, isValidElement, ReactNode, useMemo } from "react";
+"use client";
 
-import { useCellStyles, mobileBreakpoint } from "./style";
+import { ReactElement, isValidElement, ReactNode, useMemo } from "react";
+import cls from "classnames";
+
 import { CellProps } from "./types";
+import classes from "./styles.module.scss";
 
 export function Cell<D>({
   data,
   header,
   empty = null,
 }: CellProps<D>): ReactElement {
-  const styles = useCellStyles();
   // const { transform } = header.props;
   const {
     render,
@@ -28,19 +30,15 @@ export function Cell<D>({
 
   return (
     <td
+      className={cls(
+        classes.cell,
+        fit && classes.fit,
+        label == null && classes.no_label,
+        empty == null && display == null && classes.hide
+      )}
       data-label={header.label}
-      css={[
-        (theme) => ({
-          textAlign,
-          [theme.breakpoints.down(mobileBreakpoint)]: {
-            textAlign: mobileTextAlign,
-          },
-        }),
-        styles.td,
-        fit && styles.fit,
-        label == null && styles.noLabel,
-        empty == null && display == null && styles.hide,
-      ]}
+      data-align={textAlign}
+      data-mobile-align={mobileTextAlign}
     >
       {display == null ? empty : display}
     </td>
