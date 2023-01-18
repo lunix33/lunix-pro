@@ -1,0 +1,21 @@
+models:
+  "user":
+    "username": "Username"
+    "displayName": "Display name"
+
+  "createdOn": "Created on"
+  "deletedOn": "Deleted on"
+
+pages:
+  "home":
+    "title": "Admin Home"
+
+  "usersList":
+    "title": "Users management"
+    "tableCaption": "List of users"
+
+  "groupsList":
+    "title": "Groups management"
+    "tableCaption": "List of groups"
+
+  "showDeleted": "Show deleted entries"

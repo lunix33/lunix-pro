@@ -14,15 +14,20 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": ["@emotion/react/types/css-prop"],
     "paths": {
-      "@t": ["theme"],
       "@c/*": ["components/*"],
       "@l/*": ["layout/*"],
-      "@f/*": ["features/*"]
+      "@f/*": ["features/*"],
+      "@u/*": ["utils/*"],
+      "@i18n/*": ["i18n/*"]
     },
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
